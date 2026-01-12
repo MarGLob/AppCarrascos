@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Carrascos do Asfalto</title>
+	<link rel="apple-touch-icon" href="carrasco.jpg">
+	<link rel="icon" type="image/png" href="carrasco.jpg">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #121212; color: #e0e0e0; padding-bottom: 70px; }
+        .navbar { background-color: #000; border-bottom: 2px solid #d32f2f; }
+        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: #1a1a1a; border-top: 1px solid #333; z-index: 1000; }
+        .nav-link { color: #888; text-align: center; font-size: 0.8rem; }
+        .nav-link.active { color: #d32f2f; font-weight: bold; }
+        .nav-link i { font-size: 1.5rem; display: block; }
+        .section { display: none; padding: 20px; }
+        .section.active { display: block; }
+        .card { background-color: #1e1e1e; border: 1px solid #333; margin-bottom: 10px; }
+        .form-check-input:checked { background-color: #d32f2f; border-color: #d32f2f; }
+        .btn-reset { border: 1px solid #d32f2f; color: #d32f2f; width: 100%; margin-top: 20px;}
+        h2 { color: #d32f2f; border-bottom: 1px solid #333; padding-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-dark sticky-top p-3">
+        <span class="navbar-brand mb-0 h1 fw-bold">CARRASCOS DO ASFALTO</span>
+    </nav>
+
+    <div id="tab-checklist" class="section active">
+        <h2><i class="bi bi-list-check"></i> Pré-Viagem</h2>
+        <p class="text-muted small">Marque os itens antes de rodar. Fica salvo automaticamente.</p>
+        
+        <div id="checklist-container">
+            </div>
+
+        <button onclick="resetChecklist()" class="btn btn-reset btn-sm">Limpar Checklist</button>
+    </div>
+
+    <div id="tab-estatuto" class="section">
+        <h2><i class="bi bi-book"></i> Estatuto</h2>
+        <div class="card p-3">
+            <h5 class="text-white">Artigo 1º - Do Objetivo</h5>
+            <p class="small">O Motoclube Carrascos do Asfalto tem como objetivo promover a união, viagens e a cultura motociclista...</p>
+            <hr>
+            <h5 class="text-white">Artigo 2º - Dos Deveres</h5>
+            <p class="small">I - Respeitar as leis de trânsito;<br>II - Honrar o colete;<br>III - Pagar as mensalidades em dia.</p>
+            </div>
+    </div>
+
+    <div class="nav-bottom d-flex justify-content-around py-2">
+        <a href="#" class="nav-link active" onclick="switchTab('checklist', this)">
+            <i class="bi bi-speedometer2"></i> Checklist
+        </a>
+        <a href="#" class="nav-link" onclick="switchTab('estatuto', this)">
+            <i class="bi bi-file-text"></i> Estatuto
+        </a>
+    </div>
+
+    <script>
+        // Itens do Checklist
+        const items = [
+            "Nível de Óleo", "Pressão dos Pneus", "Luzes de Freio/Seta", 
+            "Lubrificação da Corrente", "Freios (Pastilhas)", "Documento (CRLV/CNH)", 
+            "Capa de Chuva", "Ferramentas Básicas", "Celular Carregado"
+        ];
+
+        // Carregar Checklist ao abrir
+        function loadChecklist() {
+            const container = document.getElementById('checklist-container');
+            container.innerHTML = '';
+            
+            items.forEach((item, index) => {
+                // Verifica se já estava marcado na memória do celular
+                const isChecked = localStorage.getItem('check_' + index) === 'true';
+                
+                container.innerHTML += `
+                <div class="card p-2">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="item_${index}" 
+                            ${isChecked ? 'checked' : ''} onchange="saveState(${index})">
+                        <label class="form-check-label text-white" for="item_${index}">${item}</label>
+                    </div>
+                </div>`;
+            });
+        }
+
+        // Salvar estado quando o usuário clica
+        function saveState(index) {
+            const checkbox = document.getElementById('item_' + index);
+            localStorage.setItem('check_' + index, checkbox.checked);
+        }
+
+        // Limpar tudo
+        function resetChecklist() {
+            if(confirm("Deseja desmarcar todos os itens?")) {
+                items.forEach((_, index) => localStorage.removeItem('check_' + index));
+                loadChecklist();
+            }
+        }
+
+        // Navegação entre Abas
+        function switchTab(tabName, element) {
+            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabName).classList.add('active');
+            
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        // Inicializar
+        loadChecklist();
+    </script>
+</body>
+</html>
