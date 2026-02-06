@@ -5,179 +5,574 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Carrascos do Asfalto</title>
     
-    <!-- ÍCONES SOLICITADOS -->
-    <link rel="apple-touch-icon" href="carrasco.jpg">
-    <link rel="icon" type="image/png" href="carrasco.jpg">
+    <!-- Favicon (Fallback se a imagem não existir) -->
+    <link rel="icon" href="carrasco.jpg">
 
-    <!-- Estilo Visual (Bootstrap) -->
+    <!-- Bootstrap 5 & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     
+    <!-- Fontes Google (Roboto para texto, Rye para títulos estilo Western/Biker) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Rye&display=swap" rel="stylesheet">
+
     <style>
-        body { background-color: #121212; color: #e0e0e0; padding-bottom: 70px; }
-        
-        /* Ajuste da Barra Superior (Navbar) */
-        .navbar { 
-            background-color: #000; 
-            border-bottom: 2px solid #d32f2f; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        :root {
+            --bg-dark: #121212;
+            --bg-card: #1e1e1e;
+            --mc-red: #d32f2f;
+            --mc-red-dark: #b71c1c;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --success-green: #2e7d32;
+        }
+
+        body { 
+            background-color: var(--bg-dark); 
+            color: var(--text-main); 
+            font-family: 'Roboto', sans-serif;
+            padding-bottom: 80px; /* Espaço para o menu inferior */
         }
         
-        /* Estilo da Imagem no Header */
+        /* Tipografia Biker */
+        h1, h2, h5.modal-title {
+            font-family: 'Rye', serif; /* Fonte estilo faroeste/moto */
+            letter-spacing: 1px;
+        }
+
+        /* Navbar Superior */
+        .navbar { 
+            background: linear-gradient(180deg, #000 0%, #1a1a1a 100%); 
+            border-bottom: 3px solid var(--mc-red); 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.7);
+        }
+        
         .header-logo {
-            width: 40px; 
-            height: 40px; 
-            border-radius: 50%; /* Deixa redonda */
-            border: 2px solid #333;
-            margin-right: 10px;
+            width: 45px; 
+            height: 45px; 
+            border-radius: 50%; 
+            border: 2px solid var(--mc-red);
+            margin-right: 12px;
             object-fit: cover;
+            background-color: #333; /* Fallback visual */
+        }
+
+        /* Barra de Progresso */
+        .progress-container {
+            background-color: #2c2c2c;
+            margin: 15px;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 25px;
+            border: 1px solid #444;
+            position: relative;
+        }
+        .progress-bar {
+            background-color: var(--mc-red);
+            transition: width 0.4s ease, background-color 0.4s ease;
+            font-weight: bold;
+            line-height: 25px;
+            text-align: center;
+            font-size: 0.8rem;
+            text-shadow: 1px 1px 2px black;
+        }
+
+        /* Accordion (Categorias) Customizado */
+        .accordion-item {
+            background-color: var(--bg-card);
+            border: 1px solid #333;
+            margin-bottom: 10px;
+            border-radius: 5px !important;
+            overflow: hidden;
+        }
+        .accordion-button {
+            background-color: #252525;
+            color: var(--text-main);
+            font-weight: bold;
+            box-shadow: none !important;
+            display: flex;
+            align-items: center;
+        }
+        .accordion-button:not(.collapsed) {
+            background-color: #333;
+            color: var(--mc-red);
+        }
+        .accordion-button::after {
+            filter: invert(1); /* Ícone da seta branco */
+            margin-left: 10px;
+        }
+        
+        /* Badge de Contagem na Categoria */
+        .cat-badge {
+            margin-left: auto; /* Empurra para a direita */
+            background-color: #121212;
+            border: 1px solid #444;
+            color: #888;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            min-width: 50px;
+            text-align: center;
+            font-family: 'Roboto', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .cat-badge.completed {
+            background-color: var(--success-green);
+            color: white;
+            border-color: var(--success-green);
+        }
+
+        .accordion-body {
+            background-color: var(--bg-card);
+            padding: 10px;
+        }
+
+        /* Itens do Checklist - ATUALIZADO PARA MAIOR VISIBILIDADE */
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 15px; /* Área de toque maior */
+            margin-bottom: 8px; /* Separação entre itens */
+            background-color: #2d2d2d; /* Fundo mais claro que o base */
+            border: 1px solid #444; /* Borda sutil para definição */
+            border-radius: 8px; /* Visual de botão */
+            color: #ffffff; /* Texto branco puro */
+            font-size: 1.1rem; /* Fonte levemente maior */
+            font-weight: 500; /* Texto mais encorpado */
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3); /* Sombra para profundidade */
+        }
+        
+        .checklist-item:last-child { margin-bottom: 0; }
+        
+        /* Efeito ao tocar */
+        .checklist-item:active { 
+            transform: scale(0.98); 
+            background-color: #383838; 
+        }
+
+        /* Item Marcado (Checked) - Visual mais apagado para focar no que falta */
+        .checklist-item.checked {
+            background-color: #1a1a1a; /* Fica escuro quando marcado */
+            border-color: #222;
+            opacity: 0.7;
+        }
+
+        /* Checkbox Customizado */
+        .custom-check {
+            width: 26px; 
+            height: 26px;
+            border: 2px solid var(--mc-red);
+            border-radius: 6px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            flex-shrink: 0;
+        }
+        
+        .custom-check i {
+            color: white;
+            font-size: 16px;
+            display: none;
+        }
+
+        .checked .custom-check {
+            background-color: var(--mc-red);
+        }
+
+        .checked .custom-check i {
+            display: block;
+        }
+        
+        .checked span {
+            text-decoration: line-through;
+            color: #666; /* Texto bem apagado quando marcado */
         }
 
         /* Menu Inferior */
-        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: #1a1a1a; border-top: 1px solid #333; z-index: 1000; }
-        .nav-link { color: #888; text-align: center; font-size: 0.8rem; text-decoration: none; }
-        .nav-link.active { color: #d32f2f; font-weight: bold; }
-        .nav-link i { font-size: 1.5rem; display: block; }
+        .nav-bottom { 
+            position: fixed; 
+            bottom: 0; 
+            width: 100%; 
+            background: #000; 
+            border-top: 2px solid var(--mc-red); 
+            z-index: 1000;
+            padding-bottom: env(safe-area-inset-bottom); /* Ajuste para iPhone X+ */
+        }
+        .nav-link { 
+            color: #666; 
+            text-align: center; 
+            font-size: 0.75rem; 
+            text-decoration: none; 
+            flex: 1;
+            padding: 10px 0;
+            transition: color 0.3s;
+        }
+        .nav-link.active { 
+            color: var(--mc-red); 
+            background: linear-gradient(0deg, rgba(211, 47, 47, 0.1) 0%, transparent 100%);
+        }
+        .nav-link i { 
+            font-size: 1.4rem; 
+            display: block; 
+            margin-bottom: 2px;
+        }
         
-        /* Áreas de Conteúdo */
-        .section { display: none; padding: 20px; }
+        /* Seções */
+        .section { display: none; padding: 10px 15px; animation: fadeIn 0.3s; }
         .section.active { display: block; }
-        .card { background-color: #1e1e1e; border: 1px solid #333; margin-bottom: 10px; }
-        
-        /* Cores do Checklist */
-        .form-check-input:checked { background-color: #d32f2f; border-color: #d32f2f; }
-        .btn-reset { border: 1px solid #d32f2f; color: #d32f2f; width: 100%; margin-top: 20px;}
-        h2 { color: #d32f2f; border-bottom: 1px solid #333; padding-bottom: 10px; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cartões do Estatuto */
+        .statute-card {
+            background: #1e1e1e;
+            border-left: 4px solid var(--mc-red);
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+        }
+
+        .btn-danger-custom {
+            background-color: transparent;
+            border: 1px solid var(--mc-red);
+            color: var(--mc-red);
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+        .btn-danger-custom:active {
+            background-color: var(--mc-red);
+            color: white;
+        }
     </style>
 </head>
 <body>
 
-    <!-- CABEÇALHO COM IMAGEM E NOME -->
-    <nav class="navbar navbar-dark sticky-top p-2">
+    <!-- CABEÇALHO -->
+    <nav class="navbar sticky-top">
         <div class="container-fluid d-flex justify-content-center align-items-center">
-            <!-- A imagem carrasco.jpg deve estar na mesma pasta -->
-            <img src="carrasco.jpg" alt="Logo" class="header-logo">
-            <span class="navbar-brand mb-0 h1 fw-bold" style="font-size: 1.1rem;">CARRASCOS DO ASFALTO</span>
+            <!-- Coloque sua imagem carrasco.jpg na pasta do projeto -->
+            <img src="carrasco.jpg" onerror="this.src='https://via.placeholder.com/45/000000/d32f2f?text=MC'" alt="Logo" class="header-logo">
+            <span class="navbar-brand mb-0 h1 text-white">CARRASCOS DO ASFALTO</span>
         </div>
     </nav>
 
     <!-- ABA 1: CHECKLIST -->
     <div id="tab-checklist" class="section active">
-        <h2><i class="bi bi-list-check"></i> Pré-Viagem</h2>
-        <p class="text-muted small">Marque os itens antes de rodar. Fica salvo automaticamente.</p>
-        
-        <div id="checklist-container">
-            <!-- Os itens aparecem aqui via Javascript -->
+        <div class="d-flex justify-content-between align-items-end mb-2 mt-2">
+            <h2 class="m-0 text-white" style="font-size: 1.5rem;">Pré-Viagem</h2>
+            <small class="text-muted" id="progress-text">0% Pronto</small>
         </div>
 
-        <button onclick="resetChecklist()" class="btn btn-reset btn-sm">Limpar Checklist</button>
+        <!-- Barra de Progresso Geral -->
+        <div class="progress-container mb-4">
+            <div class="progress-bar" id="main-progress" style="width: 0%"></div>
+        </div>
+        
+        <!-- Container Accordion -->
+        <div class="accordion" id="checklistAccordion">
+            <!-- O JS vai preencher isso aqui -->
+        </div>
+
+        <button onclick="resetChecklist()" class="btn btn-danger-custom mb-5">
+            <i class="bi bi-arrow-counterclockwise"></i> Resetar Checklist
+        </button>
     </div>
 
     <!-- ABA 2: ESTATUTO -->
     <div id="tab-estatuto" class="section">
-        <h2><i class="bi bi-book"></i> Estatuto</h2>
+        <h2 class="mt-2 mb-4 text-white text-center">Estatuto Oficial</h2>
         
-        <div class="card p-3">
-            <h5 class="text-white">Artigo 1º - Do Objetivo</h5>
-            <p class="small text-secondary">O Motoclube Carrascos do Asfalto tem como objetivo promover a união, viagens e a cultura motociclista, prezando sempre pela segurança e irmandade.</p>
+        <div class="statute-card">
+            <h5 class="text-white"><i class="bi bi-flag-fill text-danger me-2"></i>Artigo 1º - Do Objetivo</h5>
+            <p class="text-secondary m-0">Promover a união, viagens seguras e a cultura motociclista, prezando sempre pela segurança e pela irmandade.</p>
+        </div>
+
+        <div class="statute-card">
+            <h5 class="text-white"><i class="bi bi-shield-shaded text-danger me-2"></i>Artigo 2º - Dos Deveres</h5>
+            <p class="text-secondary mb-2">I - Respeitar rigorosamente as leis de trânsito.</p>
+            <p class="text-secondary mb-2">II - Honrar o colete e as cores do clube em qualquer situação.</p>
+            <p class="text-secondary m-0">III - Zelar pela imagem do grupo nas estradas e eventos.</p>
+        </div>
+
+        <div class="statute-card">
+            <h5 class="text-white"><i class="bi bi-signpost-2-fill text-danger me-2"></i>Artigo 3º - Das Viagens</h5>
+            <p class="text-secondary m-0">O comboio deve respeitar a formação definida pelo Capitão de Estrada (Road Captain). É proibido ultrapassar o Ponteiro ou ficar para trás do Ferrolho sem emergência.</p>
         </div>
         
-        <div class="card p-3">
-            <h5 class="text-white">Artigo 2º - Dos Deveres</h5>
-            <p class="small text-secondary">
-                I - Respeitar as leis de trânsito;<br>
-                II - Honrar o colete e as cores do clube;<br>
-                III - Manter a conduta exemplar nas estradas.
-            </p>
-        </div>
-        
-        <div class="card p-3">
-            <h5 class="text-white">Artigo 3º - Das Viagens</h5>
-            <p class="small text-secondary">O comboio deve respeitar a formação definida pelo Capitão de Estrada, mantendo distância de segurança e sinalizando obstáculos.</p>
+        <div class="statute-card">
+            <h5 class="text-white"><i class="bi bi-people-fill text-danger me-2"></i>Artigo 4º - Da Conduta</h5>
+            <p class="text-secondary m-0">Respeito mútuo é inegociável. Problemas pessoais devem ser resolvidos fora dos eventos oficiais do clube.</p>
         </div>
     </div>
 
     <!-- NAVEGAÇÃO INFERIOR -->
-    <div class="nav-bottom d-flex justify-content-around py-2">
+    <div class="nav-bottom d-flex justify-content-around">
         <a href="#" class="nav-link active" onclick="switchTab('checklist', this)">
-            <i class="bi bi-speedometer2"></i> Checklist
+            <i class="bi bi-card-checklist"></i> Checklist
         </a>
         <a href="#" class="nav-link" onclick="switchTab('estatuto', this)">
-            <i class="bi bi-file-text"></i> Estatuto
+            <i class="bi bi-book-half"></i> Estatuto
         </a>
     </div>
 
+    <!-- BOOTSTRAP JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
-        // --- CONFIGURAÇÃO DOS DADOS ---
-        const items = [
-            "Nível de Óleo", 
-            "Pressão dos Pneus", 
-            "Luzes de Freio/Seta", 
-            "Lubrificação da Corrente", 
-            "Freios (Pastilhas)", 
-            "Documento (CRLV/CNH)", 
-            "Capa de Chuva", 
-            "Ferramentas Básicas", 
-            "Celular Carregado"
+        // --- DADOS DO CHECKLIST (Organizados por Categorias) ---
+        const checklistData = [
+            {
+                id: "docs",
+                title: "1. Documentação",
+                icon: "bi-file-earmark-person",
+                items: [
+                    "CNH (Física e Digital)",
+                    "CRLV da Moto (Em dia)",
+                    "Seguro e Telefone 24h",
+                    "RG / Identidade",
+                    "Cartão do Plano de Saúde",
+                    "Dinheiro em espécie (Pedágios)",
+                    "Chave Reserva"
+                ]
+            },
+            {
+                id: "mech",
+                title: "2. Manutenção da Máquina",
+                icon: "bi-wrench-adjustable",
+                items: [
+                    "Pneus (Calibragem e TWI)",
+                    "Transmissão (Corrente lubrificada)",
+                    "Nível do Óleo",
+                    "Freios (Pastilhas e fluido)",
+                    "Luzes (Farol, seta, freio)",
+                    "Líquido de Arrefecimento",
+                    "Bateria (Carga e bornes)"
+                ]
+            },
+            {
+                id: "epi",
+                title: "3. Equipamento (EPI)",
+                icon: "bi-shield-check",
+                items: [
+                    "Capacete (Viseira limpa)",
+                    "Jaqueta com proteções",
+                    "Calça de Motociclista",
+                    "Luvas (Principal + Reserva)",
+                    "Botas Impermeáveis",
+                    "Capa de Chuva",
+                    "Balaclava / Segunda Pele"
+                ]
+            },
+            {
+                id: "sos",
+                title: "4. Emergência & Ferramentas",
+                icon: "bi-tools",
+                items: [
+                    "Kit Reparo Pneus (Macarrão/CO2)",
+                    "Ferramentas Básicas da Moto",
+                    "Lubrificante de Corrente (Spray)",
+                    "Silver Tape e Enforca-gato",
+                    "Lanterna de cabeça"
+                ]
+            },
+            {
+                id: "food",
+                title: "5. Alimentação (Restrições)",
+                icon: "bi-cup-hot",
+                items: [
+                    "Lanches Veganos (Sem Leite/Ovo)",
+                    "Hidratação (Camelbak/Garrafa)",
+                    "Cartão de Alerta de Alergia",
+                    "Evitar salgados duvidosos na estrada"
+                ]
+            },
+            {
+                id: "saude",
+                title: "6. Saúde e Higiene",
+                icon: "bi-prescription2",
+                items: [
+                    "Protetor Solar/Labial",
+                    "Remédios de uso contínuo",
+                    "Kit Primeiros Socorros básico",
+                    "Kit Higiene Pessoal"
+                ]
+            },
+            {
+                id: "mc",
+                title: "7. Representação (MC)",
+                icon: "bi-flag-fill",
+                items: [
+                    "Bandeira do MC",
+                    "Botons para troca",
+                    "Adesivos do clube",
+                    "Colete com Brasão",
+                    "Camisetas do MC (reserva)"
+                ]
+            },
+            {
+                id: "tech",
+                title: "8. Eletrônicos",
+                icon: "bi-phone",
+                items: [
+                    "Celular com GPS Offline",
+                    "Suporte de Celular firme",
+                    "Intercomunicador carregado",
+                    "Power Bank (Carregador)"
+                ]
+            }
         ];
 
-        // --- FUNÇÕES DO APP ---
+        // --- LÓGICA DA APLICAÇÃO ---
 
-        // 1. Carregar Checklist na tela
-        function loadChecklist() {
-            const container = document.getElementById('checklist-container');
+        function initApp() {
+            renderAccordion();
+            updateAllProgress(); // Chamada inicial para calcular tudo
+        }
+
+        function renderAccordion() {
+            const container = document.getElementById('checklistAccordion');
             container.innerHTML = '';
-            
-            items.forEach((item, index) => {
-                // Recupera da memória se estava marcado
-                const isChecked = localStorage.getItem('check_' + index) === 'true';
-                
-                container.innerHTML += `
-                <div class="card p-2" onclick="toggleCheck(${index})">
-                    <div class="form-check form-switch" style="pointer-events: none;">
-                        <input class="form-check-input" type="checkbox" id="item_${index}" 
-                            ${isChecked ? 'checked' : ''}>
-                        <label class="form-check-label text-white" for="item_${index}">${item}</label>
+
+            checklistData.forEach((category, index) => {
+                // Criação do HTML de cada categoria com o BADGE
+                const catHtml = `
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading${category.id}">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${category.id}" aria-expanded="false" aria-controls="collapse${category.id}">
+                            <i class="bi ${category.icon} me-2"></i> 
+                            <span>${category.title}</span>
+                            <!-- Badge de progresso por categoria -->
+                            <span id="badge-${category.id}" class="cat-badge">0/${category.items.length}</span>
+                        </button>
+                    </h2>
+                    <div id="collapse${category.id}" class="accordion-collapse collapse" aria-labelledby="heading${category.id}" data-bs-parent="#checklistAccordion">
+                        <div class="accordion-body p-0">
+                            ${renderItems(category.items, category.id)}
+                        </div>
                     </div>
                 </div>`;
+                container.innerHTML += catHtml;
             });
         }
 
-        // 2. Salvar estado (Marcar/Desmarcar)
-        function toggleCheck(index) {
-            // Seleciona o checkbox
-            const checkbox = document.getElementById('item_' + index);
-            // Inverte o valor (se true vira false, se false vira true)
-            checkbox.checked = !checkbox.checked;
-            // Salva no navegador do celular
-            localStorage.setItem('check_' + index, checkbox.checked);
+        function renderItems(items, catId) {
+            let html = '';
+            items.forEach((item, index) => {
+                const uniqueId = `${catId}_${index}`;
+                const isChecked = localStorage.getItem(uniqueId) === 'true';
+                const checkedClass = isChecked ? 'checked' : '';
+
+                html += `
+                <div class="checklist-item ${checkedClass}" onclick="toggleItem('${uniqueId}', this)">
+                    <div class="custom-check">
+                        <i class="bi bi-check-lg"></i>
+                    </div>
+                    <span>${item}</span>
+                </div>`;
+            });
+            return html;
         }
 
-        // 3. Botão de Limpar Tudo
-        function resetChecklist() {
-            if(confirm("Deseja desmarcar todos os itens?")) {
-                items.forEach((_, index) => localStorage.removeItem('check_' + index));
-                loadChecklist();
+        function toggleItem(id, element) {
+            // Verifica estado atual
+            const isChecked = element.classList.contains('checked');
+            
+            // Inverte visualmente
+            if (!isChecked) {
+                element.classList.add('checked');
+                localStorage.setItem(id, 'true');
+            } else {
+                element.classList.remove('checked');
+                localStorage.setItem(id, 'false');
+            }
+
+            updateAllProgress();
+        }
+
+        function updateAllProgress() {
+            let totalGlobal = 0;
+            let checkedGlobal = 0;
+
+            checklistData.forEach(cat => {
+                let catTotal = cat.items.length;
+                let catChecked = 0;
+
+                // Calcula progresso desta categoria
+                cat.items.forEach((item, index) => {
+                    const id = `${cat.id}_${index}`;
+                    if (localStorage.getItem(id) === 'true') {
+                        catChecked++;
+                    }
+                });
+
+                // Atualiza o Badge da Categoria
+                const badgeEl = document.getElementById(`badge-${cat.id}`);
+                if(badgeEl) {
+                    badgeEl.innerText = `${catChecked}/${catTotal}`;
+                    
+                    // Muda estilo se completou a categoria
+                    if(catChecked === catTotal && catTotal > 0) {
+                        badgeEl.classList.add('completed');
+                        badgeEl.innerHTML = '<i class="bi bi-check-lg"></i>'; // Opcional: troca por check
+                    } else {
+                        badgeEl.classList.remove('completed');
+                    }
+                }
+
+                // Soma ao global
+                totalGlobal += catTotal;
+                checkedGlobal += catChecked;
+            });
+
+            // Atualiza Barra Global
+            const percent = totalGlobal === 0 ? 0 : Math.round((checkedGlobal / totalGlobal) * 100);
+            
+            const bar = document.getElementById('main-progress');
+            const text = document.getElementById('progress-text');
+            
+            bar.style.width = percent + '%';
+            bar.innerText = percent > 10 ? percent + '%' : '';
+            text.innerText = percent === 100 ? 'PRONTO PARA RODAR!' : percent + '% Pronto';
+            
+            if(percent === 100) {
+                bar.style.backgroundColor = '#2e7d32'; // Verde
+            } else {
+                bar.style.backgroundColor = '#d32f2f'; // Vermelho MC
             }
         }
 
-        // 4. Trocar de Abas (Checklist <-> Estatuto)
-        function switchTab(tabName, element) {
-            // Esconde todas as seções
+        function resetChecklist() {
+            if(confirm("Tem certeza? Isso apagará todo o seu progresso.")) {
+                localStorage.clear();
+                location.reload(); 
+            }
+        }
+
+        function switchTab(tabId, navElement) {
             document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
-            // Mostra a seção escolhida
-            document.getElementById('tab-' + tabName).classList.add('active');
+            document.getElementById('tab-' + tabId).classList.add('active');
             
-            // Atualiza cor do botão no menu
             document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-            element.classList.add('active');
-            
-            // Rola para o topo
+            navElement.classList.add('active');
+
             window.scrollTo(0,0);
         }
 
-        // Inicia o app
-        loadChecklist();
+        // Inicia
+        document.addEventListener('DOMContentLoaded', initApp);
+
     </script>
 </body>
 </html>
